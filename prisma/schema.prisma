@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model article{
+  id String @id @default(uuid())
+  slug String @unique
+  title String
+  description String
+  contents Json
+  cover_image String?
+  published_at DateTime?
+  tags String[]
+  status String
+  type String
+  estimated_read_time Int
+  created_at DateTime @default(now())
+  category_id  String?    @db.Uuid 
+  category  category?  @r
+  elation(fields: [category_id], references: [id])
+  comments comment[]
+}
+
+model category {
+  id String @id @default(uuid()) @db.Uuid
+  name String @unique
+  slug String?
+  art artic
+}
+
+model subscribers{
+  id String @id @default(uuid())
+  email String @unique
+  subscribed_at DateTime @default(now())
+  is_verified Boolean @default(false)
+}
+
+model comment{
+  id String @id @default(uuid())
+  article_id String @db.Uuid
+  author_name String? @default("Anonymous")
+  content String
+  created_at DateTime @default(now())
+  article article @relation(fields: [article_id], references: [id])
+}
